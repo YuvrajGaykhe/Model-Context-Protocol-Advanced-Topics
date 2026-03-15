@@ -23,3 +23,22 @@ async def summarize(text_to_summarize: str, ctx: Context):
         return result.content.text
     else:
         raise ValueError("Sampling failed")
+
+@mcp.tool(
+    name="research",
+    description="Research a given topic"
+)
+async def research(
+    topic: str = Field(description="Topic to research"),
+    *,
+    context: Context
+):
+    await context.info("About to do research...")
+    await context.report_progress(20, 100)
+    sources = await do_research(topic)
+    
+    await context.info("Writing report...")
+    await context.report_progress(70, 100)
+    results = await generate_report(sources)
+    
+    return results
